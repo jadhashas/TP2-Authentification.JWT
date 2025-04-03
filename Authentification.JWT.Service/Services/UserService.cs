@@ -23,15 +23,12 @@ namespace Authentification.JWT.Service.Services
             _mapper = mapper;
         }
 
-        public async Task<UserDto?> GetUserByUsernameAsync(string username)
+        public async Task<User?> GetEntityByUsernameAsync(string username)
         {
-            var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Username == username);
-
-            return user != null ? _mapper.Map<UserDto>(user) : null;
+            return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
         }
 
-        public async Task<UserDto?> RegisterUserAsync(UserDto userDto)
+        public async Task<UserResponseDto?> RegisterUserAsync(UserDto userDto)
         {
             var exists = await _context.Users.AnyAsync(u =>
                 u.Username == userDto.Username || u.Email == userDto.Email);
@@ -45,7 +42,12 @@ namespace Authentification.JWT.Service.Services
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
 
-            return _mapper.Map<UserDto>(user);
+            // retourne uniquement les champs non sensibles
+            return new UserResponseDto
+            {
+                Username = user.Username,
+                Email = user.Email
+            };
         }
 
         public string HashPassword(string password)

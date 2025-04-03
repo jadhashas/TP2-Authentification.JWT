@@ -1,5 +1,6 @@
 ﻿using Authentification.JWT.Service.DTOs;
 using Authentification.JWT.Service.Services;
+using Authentification.JWT.Service.Services.Interfaces;
 using Authentification.JWT.WebAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,8 +12,8 @@ namespace Authentification.JWT.WebAPI.Controllers
     {
         private readonly UserService _userService;
 
-        private readonly JwtService _jwtService;
-        public AuthController(UserService userService, JwtService jwtService)
+        private readonly IJwtService _jwtService;
+        public AuthController(UserService userService, IJwtService jwtService)
 
         {
             _userService = userService;
@@ -40,19 +41,20 @@ namespace Authentification.JWT.WebAPI.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
-            var user = await _userService.GetUserByUsernameAsync(model.Username);
+            var user = await _userService.GetEntityByUsernameAsync(model.Username);
 
             if (user == null)
                 return Unauthorized("Invalid username or password.");
 
-            // Vérification du mot de passe
             var hashed = _userService.HashPassword(model.Password);
 
-            if (user.Password != hashed) // user.Password contient PasswordHash dans le DTO
+            Console.WriteLine($"Entered: {hashed}");
+            Console.WriteLine($"Stored : {user.PasswordHash}");
+
+            if (user.PasswordHash != hashed)
                 return Unauthorized("Invalid username or password.");
 
-            var userId = await _userService.GetUserIdByUsernameAsync(model.Username);
-            var token = _jwtService.GenerateToken(userId);
+            var token = _jwtService.GenerateToken(user.Id);
 
             return Ok(new { token });
         }

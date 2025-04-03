@@ -14,8 +14,11 @@ namespace Authentification.JWT.Service.Mapping
         public MappingProfile()
         {
             CreateMap<UserDto, User>()
-                .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password));
-            CreateMap<User, UserDto>();
+    .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password));
+
+            CreateMap<User, UserDto>()
+                .ForMember(dest => dest.Password, opt => opt.Ignore()); // Sécurité : ne jamais exposer le hash
+
         }
     }   
 }
