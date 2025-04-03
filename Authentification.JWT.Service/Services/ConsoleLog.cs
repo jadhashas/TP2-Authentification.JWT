@@ -9,20 +9,25 @@ namespace Authentification.JWT.Service.Services
 {
     public class ConsoleLog : ILog
     {
+        private readonly string logFile = "app.log"; // Fichier dans dossier de l’app
+
         public void Info(string message)
         {
+            var fullMessage = $"[INFO] {DateTime.Now:yyyy-MM-dd HH:mm:ss} - {message}";
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"[INFO] {DateTime.Now:HH:mm:ss} - {message}");
+            Console.WriteLine(fullMessage);
             Console.ResetColor();
+            File.AppendAllText(logFile, fullMessage + Environment.NewLine);
         }
 
         public void Error(string message, Exception? ex = null)
         {
+            var fullMessage = $"[ERROR] {DateTime.Now:yyyy-MM-dd HH:mm:ss} - {message}" +
+                (ex != null ? $"\nException: {ex.Message}" : "");
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"[ERROR] {DateTime.Now:HH:mm:ss} - {message}");
-            if (ex != null)
-                Console.WriteLine($"Exception: {ex.Message}");
+            Console.WriteLine(fullMessage);
             Console.ResetColor();
+            File.AppendAllText(logFile, fullMessage + Environment.NewLine);
         }
     }
 }
