@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Authentification.JWT.DAL.Context;
 using Authentification.JWT.DAL.Models;
 using Authentification.JWT.Service.DTOs;
+using Authentification.JWT.Service.Services.Interfaces;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,11 +17,13 @@ namespace Authentification.JWT.Service.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
+        private readonly ILog _log;
 
-        public UserService(ApplicationDbContext context, IMapper mapper)
+        public UserService(ApplicationDbContext context, IMapper mapper, ILog log)
         {
             _context = context;
             _mapper = mapper;
+            _log = log;
         }
 
         public async Task<User?> GetEntityByUsernameAsync(string username)
@@ -41,6 +44,8 @@ namespace Authentification.JWT.Service.Services
 
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
+
+            _log.Info($"User {user.Username} registered successfully.");
 
             // retourne uniquement les champs non sensibles
             return new UserResponseDto
