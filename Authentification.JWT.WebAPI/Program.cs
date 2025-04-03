@@ -3,6 +3,7 @@ using System.Text;
 using Authentification.JWT.DAL.Context;
 using Authentification.JWT.Service.Services;
 using Authentification.JWT.Service.Services.Interfaces;
+using Authentification.JWT.WebAPI.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -28,6 +29,7 @@ builder.Services.AddAutoMapper(typeof(Authentification.JWT.Service.Mapping.Mappi
 // Enregistrement du service
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
+// ILog
 builder.Services.AddScoped<ILog, ConsoleLog>();
 
 // Swagger
@@ -93,6 +95,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 
