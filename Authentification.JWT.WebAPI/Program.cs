@@ -28,6 +28,7 @@ builder.Services.AddAutoMapper(typeof(Authentification.JWT.Service.Mapping.Mappi
 // Enregistrement du service
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<ILog, ConsoleLog>();
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
