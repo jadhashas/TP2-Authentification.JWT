@@ -51,7 +51,3 @@ Le projet est divisé en plusieurs couches :
   - `RegisterModel.cs` : Modèle de requête pour l'enregistrement.
   - `LoginModel.cs` : Modèle de requête pour la connexion.
 
-## Configuration
-
-Assurez-vous de configurer la clé JWT dans le fichier `appsettings.json` :
-
